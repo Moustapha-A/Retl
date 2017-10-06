@@ -20,7 +20,7 @@ excelToDataFrame = function(conn, filepath, worksheet,fromRow){
 
 importXLSX = function(conn, filepath, worksheet,table_name,fromRow, append = FALSE){
   data = excelToDataFrame(conn,filepath,worksheet,fromRow)
-  View(data)
+  #View(data)
   if(isTRUE(append)){
   RPostgreSQL::dbWriteTable(conn,table_name,as.data.frame(data),append=TRUE)
   }
