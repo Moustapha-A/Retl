@@ -20,7 +20,7 @@ excelToDataFrame = function(conn, filepath, worksheet,fromRow){
 }
 
 importXLSX = function(conn, filepath, worksheet,table_name,fromRow, append = FALSE){
-  data = excelToDataFrame(conn,filepath,worksheet,fromRow)
+  data = as.data.frame(excelToDataFrame(conn,filepath,worksheet,fromRow))
   if(isTRUE(append)){
   caroline::dbWriteTable2(conn,table_name,as.data.frame(data),append=TRUE)
   }
