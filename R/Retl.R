@@ -32,7 +32,7 @@ importXLSX = function(conn, filepath, worksheet,table_name,fromRow, append = FAL
 importToDB = function(host, port="", user, password, database, filepath, type, worksheet=NULL, fromRow=1, tableName, append = FALSE){
 
   tryCatch({
-    drv <- RPostgreSQL::dbDriver("PostgreSQL")
+    drv <- dbDriver("PostgreSQL")
     print("Connecting to database")
     conn <- RPostgreSQL::dbConnect(drv,
                       dbname = database,
