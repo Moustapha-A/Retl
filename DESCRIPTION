@@ -12,4 +12,5 @@ LazyData: true
 Imports: RPostgreSQL,
     data.table,
     XLConnect,
-    DBI
+    DBI,
+    caroline

@@ -1,14 +1,15 @@
 devtools::use_package("RPostgreSQL")
 devtools::use_package("data.table")
 devtools::use_package("XLConnect")
+devtools::use_package("caroline")
 
 importCSV = function(conn, filepath, table_name,append=FALSE){
   data = data.table::fread(filepath)
   if(isTRUE(append)){
-    RPostgreSQL::dbWriteTable(conn,table_name,as.data.frame(data),append=TRUE)
+    caroline::dbWriteTable2(conn,table_name,as.data.frame(data),append=TRUE)
   }
   else{
-    RPostgreSQL::dbWriteTable(conn,table_name,as.data.frame(data))
+    caroline::dbWriteTable2(conn,table_name,as.data.frame(data))
   }
 }
 
@@ -21,10 +22,10 @@ excelToDataFrame = function(conn, filepath, worksheet,fromRow){
 importXLSX = function(conn, filepath, worksheet,table_name,fromRow, append = FALSE){
   data = excelToDataFrame(conn,filepath,worksheet,fromRow)
   if(isTRUE(append)){
-  RPostgreSQL::dbWriteTable(conn,table_name,as.data.frame(data),append=TRUE)
+  caroline::dbWriteTable2(conn,table_name,as.data.frame(data),append=TRUE)
   }
   else{
-  RPostgreSQL::dbWriteTable(conn,table_name,as.data.frame(data))
+  caroline::dbWriteTable2(conn,table_name,as.data.frame(data))
 }
 }
 
