@@ -1,7 +1,6 @@
 devtools::use_package("RPostgreSQL")
 devtools::use_package("data.table")
 devtools::use_package("XLConnect")
-devtools::use_package("DBI")
 
 importCSV = function(conn, filepath, table_name,append=FALSE){
   data = data.table::fread(filepath)
@@ -32,7 +31,7 @@ importXLSX = function(conn, filepath, worksheet,table_name,fromRow, append = FAL
 importToDB = function(host, port="", user, password, database, filepath, type, worksheet=NULL, fromRow=1, tableName, append = FALSE){
 
   tryCatch({
-    drv <- DBI::dbDriver("PostgreSQL")
+    drv <- RPostgreSQL::PostgreSQL()
     print("Connecting to database")
     conn <- RPostgreSQL::dbConnect(drv,
                       dbname = database,
