@@ -1,6 +1,7 @@
 devtools::use_package("RPostgreSQL")
 devtools::use_package("data.table")
 devtools::use_package("XLConnect")
+devtools::use_package("DBI")
 devtools::use_package("caroline")
 
 importCSV = function(conn, filepath, table_name,append=FALSE){
