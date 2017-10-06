@@ -1,6 +1,11 @@
-importCSV = function(conn, filepath, table_name){
+importCSV = function(conn, filepath, table_name,append=FALSE){
   data = fread(filepath)
-  RPostgreSQL::dbWriteTable(conn,table_name,as.data.frame(data))
+  if(isTRUE(append)){
+    RPostgreSQL::dbWriteTable(conn,table_name,as.data.frame(data),append=TRUE)
+  }
+  else{
+    RPostgreSQL::dbWriteTable(conn,table_name,as.data.frame(data))
+  }
 }
 
 excelToDataFrame = function(conn, filepath, worksheet,fromRow){
@@ -9,12 +14,17 @@ excelToDataFrame = function(conn, filepath, worksheet,fromRow){
   return(ws)
 }
 
-importXLSX = function(conn, filepath, worksheet,table_name,fromRow){
+importXLSX = function(conn, filepath, worksheet,table_name,fromRow, append = FALSE){
   data = excelToDataFrame(conn,filepath,worksheet,fromRow)
+  if(isTRUE(append)){
+  RPostgreSQL::dbWriteTable(conn,table_name,as.data.frame(data),append=TRUE)
+  }
+  else{
   RPostgreSQL::dbWriteTable(conn,table_name,as.data.frame(data))
 }
+}
 
-importToDB = function(host, port="", user, password, database, filepath, type, worksheet=NULL, fromRow=1, tableName){
+importToDB = function(host, port="", user, password, database, filepath, type, worksheet=NULL, fromRow=1, tableName, append = FALSE){
 
   tryCatch({
     drv <- dbDriver("PostgreSQL")
@@ -33,13 +43,16 @@ importToDB = function(host, port="", user, password, database, filepath, type, w
 
   if (type=="xlsx"){
     if(is.null(worksheet)) stop("You should provide the excel worksheet name using the worksheet argument")
-    importXLSX(conn, filepath, worksheet, tableName, fromRow)
+
+    if(isTRUE(append)){importXLSX(conn, filepath, worksheet, tableName, fromRow, append = TRUE)}
+    else{importXLSX(conn, filepath, worksheet, tableName, fromRow)}
   }
 
   else
 
   if(type=="csv"){
-    importCSV(conn, filepath, tableName)
+    if(isTRUE(append)){importCSV(conn, filepath, tableName, append = TRUE)}
+    else{importCSV(conn, filepath, tableName)}
   }
 
   else stop("The type argument provided is not supported")
