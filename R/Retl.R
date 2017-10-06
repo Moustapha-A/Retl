@@ -1,5 +1,10 @@
+devtools::use_package("RPostgreSQL")
+devtools::use_package("data.table")
+devtools::use_package("XLConnect")
+
+
 importCSV = function(conn, filepath, table_name,append=FALSE){
-  data = fread(filepath)
+  data = data.table::fread(filepath)
   if(isTRUE(append)){
     RPostgreSQL::dbWriteTable(conn,table_name,as.data.frame(data),append=TRUE)
   }
@@ -9,8 +14,8 @@ importCSV = function(conn, filepath, table_name,append=FALSE){
 }
 
 excelToDataFrame = function(conn, filepath, worksheet,fromRow){
-  wb = loadWorkbook(filepath)
-  ws = readWorksheet(wb,worksheet,startRow = fromRow)
+  wb = XLConnect::loadWorkbook(filepath)
+  ws = XLConnect::readWorksheet(wb,worksheet,startRow = fromRow)
   return(ws)
 }
 
@@ -39,6 +44,7 @@ importToDB = function(host, port="", user, password, database, filepath, type, w
   },
   error=function(cond) {
     print("Unable to connect to database.")
+    print(cond)
   })
 
   if (type=="xlsx"){
