@@ -1,7 +1,3 @@
-library(RPostgreSQL)
-library(data.table)
-library(XLConnect)
-
 importCSV = function(conn, filepath, table_name){
   data = fread(filepath)
   RPostgreSQL::dbWriteTable(conn,table_name,as.data.frame(data))
@@ -19,46 +15,36 @@ importXLSX = function(conn, filepath, worksheet,table_name,fromRow){
 }
 
 importToDB = function(host, port="", user, password, database, filepath, type, worksheet=NULL, fromRow=1, tableName){
-  
+
   tryCatch({
     drv <- dbDriver("PostgreSQL")
     print("Connecting to database")
-    conn <- dbConnect(drv, 
+    conn <- dbConnect(drv,
                       dbname = database,
-                      host = host, 
+                      host = host,
                       port = port,
-                      user = user, 
+                      user = user,
                       password = password)
     print("Connected!")
   },
   error=function(cond) {
     print("Unable to connect to database.")
   })
-  
+
   if (type=="xlsx"){
     if(is.null(worksheet)) stop("You should provide the excel worksheet name using the worksheet argument")
     importXLSX(conn, filepath, worksheet, tableName, fromRow)
-  } 
-  
+  }
+
   else
-    
+
   if(type=="csv"){
     importCSV(conn, filepath, tableName)
   }
-  
+
   else stop("The type argument provided is not supported")
-  
+
 }
 
-importToDB(host = "localhost",
-           port = "",
-           user = "polluscope",
-           password = "polluscope",
-           database = "polluscope",
-           filepath = "/home/qpc/Desktop/cairsens MN-046 22092017.xlsx",
-           type = "xlsx",
-           worksheet = "data",
-           fromRow =  2,
-           tableName = "finally")
 
 
